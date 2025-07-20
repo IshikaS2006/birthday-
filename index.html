@@ -501,7 +501,7 @@ function extinguishCandles() {
             for (let i = 0; i < data.length; i++) {
               max = Math.max(max, Math.abs(data[i] - 128));
             }
-            if (max > 60 && !blown) {
+            if (max > 40 && !blown) {
               extinguishCandles();
               stream.getTracks().forEach(track => track.stop());
               audioCtx.close();
