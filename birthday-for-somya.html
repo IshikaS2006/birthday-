@@ -1,0 +1,597 @@
+<!-- Fullscreen Surprise Modal (Image Only) -->
+  <div class="surprise-modal-overlay" id="surpriseModalOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.32);z-index:999;align-items:center;justify-content:center;">
+    <div class="surprise-modal-content" style="background:#fff0f5;box-shadow:0 8px 32px #ffb6b9cc;padding:32px 28px 24px 28px;max-width:92vw;max-height:88vh;border-radius:22px;position:relative;display:flex;flex-direction:column;align-items:center;">
+      <button class="surprise-modal-close" id="surpriseModalClose" title="Close" style="color:#ff6f91;top:12px;right:18px;position:absolute;font-size:2.2rem;background:none;border:none;z-index:2;cursor:pointer;line-height:1;">&times;</button>
+      <div id="bigSurpriseText" style="font-family:'Pacifico',cursive;font-size:2.1rem;color:#ff6f91;text-align:center;margin-bottom:18px;line-height:1.2;display:none;">Happy Birthday Somya!<br />Here’s your special surprise 🎁 <br> <br>now go back and blow the candles </div>
+      <img src="WhatsApp Image 2025-07-19 at 23.47.30_4f4b69ac.jpg" alt="Somya" style="max-width:320px;max-height:60vh;width:auto;height:auto;display:block;margin:auto;border-radius:16px;box-shadow:0 2px 12px #ffb6b9cc;object-fit:cover;background:#fff;"/>
+  <!-- Open the box prompt -->
+  <div style="position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:130;pointer-events:none;" id="openBoxPrompt">
+    <span style="background:#fff0f5;border:2px solid #ffb6b9;padding:10px 22px;border-radius:18px;font-family:'Pacifico',cursive;font-size:1.25rem;color:#ff6f91;box-shadow:0 2px 12px #ffb6b9cc;animation:floatPrompt 2.5s ease-in-out infinite;">Open the box</span>
+  </div>
+  <style>@keyframes floatPrompt{0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}</style>
+    </div>
+  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Somya!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffe0ec 0%, #b2f7ef 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Quicksand', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    .cake-container {
+      position: relative;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cake {
+      width: 260px;
+      height: 160px;
+      background: #fff0f5;
+      border-radius: 0 0 120px 120px/0 0 100px 100px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 1;
+      border: 4px solid #ffb6b9;
+    }
+    .cake::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 30px;
+      width: 200px;
+      height: 40px;
+      background: #ffe0ec;
+      border-radius: 100px 100px 60px 60px/60px 60px 40px 40px;
+      border: 3px solid #ffb6b9;
+      z-index: 2;
+    }
+    .candles {
+      position: absolute;
+      top: -38px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      z-index: 3;
+    }
+    .candle {
+      width: 16px;
+      height: 38px;
+      background: repeating-linear-gradient(135deg, #ffb6b9 0 6px, #fff 6px 12px);
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .candle:active {
+      transform: scale(1.1);
+    }
+    .flame {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 24px;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .flame-inner {
+      width: 12px;
+      height: 18px;
+      background: radial-gradient(ellipse at center, #fffbe0 60%, #ffd700 100%, transparent 100%);
+      border-radius: 50% 50% 60% 60%;
+      margin: 0 auto;
+      animation: flameGlow 1.2s infinite alternate;
+      opacity: 1;
+      transition: opacity 0.5s;
+    }
+    .flame.extinguished .flame-inner {
+      opacity: 0;
+      animation: none;
+    }
+    @keyframes flameGlow {
+      0% { filter: blur(0.5px) brightness(1.1); }
+      100% { filter: blur(2px) brightness(1.5); }
+    }
+    .cake-face {
+      position: absolute;
+      bottom: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 5;
+    }
+    .cake-eye {
+      width: 12px;
+      height: 12px;
+      background: #333;
+      border-radius: 50%;
+      margin: 0 8px;
+    }
+    .cake-smile {
+      width: 32px;
+      height: 16px;
+      border-bottom: 3px solid #ffb6b9;
+      border-radius: 0 0 16px 16px;
+      margin-top: 6px;
+    }
+    .message {
+      margin-top: 36px;
+      font-family: 'Pacifico', cursive;
+      font-size: 2.1rem;
+      color: #ff6f91;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s, transform 0.8s;
+      max-width: 90vw;
+      text-shadow: 2px 2px 4px #ff9aa2;
+
+    }
+    .message.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .personal {
+      font-size: 1.1rem;
+      color: #333;
+      margin-top: 18px;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 500;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      padding: 12px 18px;
+      display: inline-block;
+      box-shadow: 0 2px 12px rgba(255,182,185,0.08);
+    }
+    .confetti {
+      pointer-events: none;
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+    }
+    .confetti.active {
+      display: block;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -80px;
+      width: 40px;
+      height: 60px;
+      background: radial-gradient(circle at 60% 40%, #fff 10%, #ffb6b9 80%, #ff6f91 100%);
+      border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+      box-shadow: 0 4px 16px rgba(255,111,145,0.18);
+      animation: balloonUp 4s linear forwards;
+    }
+    @keyframes balloonUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+    }
+    .music-btn {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: #fff0f5;
+      border: 2px solid #ffb6b9;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(255,182,185,0.12);
+      cursor: pointer;
+      z-index: 200;
+      transition: background 0.2s;
+    }
+    .music-btn:hover {
+      background: #ffe0ec;
+    }
+    @media (max-width: 600px) {
+      .cake { width: 180px; height: 110px; }
+      .cake::before { width: 130px; left: 18px; }
+      .cake-face { width: 54px; height: 28px; }
+      .message { font-size: 1.2rem; }
+    }
+  </style>
+  <style>
+    /* Gift box styles */
+    .gift-box-container {
+      position: fixed;
+      left: 50%;
+      bottom: 60px;
+      transform: translateX(-50%);
+      z-index: 120;
+      cursor: pointer;
+      animation: floatGift 3.5s ease-in-out infinite;
+      transition: filter 0.3s;
+    }
+    .gift-box-container.opened {
+      animation: none;
+      filter: brightness(1.1) drop-shadow(0 0 16px #ffb6b9);
+    }
+    @keyframes floatGift {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-18px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+    .gift-box {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      perspective: 300px;
+    }
+    .gift-lid {
+      width: 80px;
+      height: 24px;
+      background: linear-gradient(90deg, #ffb6b9 60%, #fff0f5 100%);
+      border-radius: 8px 8px 12px 12px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      transition: transform 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+      box-shadow: 0 4px 8px rgba(255,182,185,0.18);
+    }
+    .gift-box-container.opened .gift-lid {
+      transform: rotateX(80deg) translateY(-40px);
+    }
+    .gift-base {
+      width: 80px;
+      height: 56px;
+      background: linear-gradient(90deg, #fff0f5 60%, #ffb6b9 100%);
+      border-radius: 0 0 12px 12px;
+      position: absolute;
+      top: 24px;
+      left: 0;
+      z-index: 1;
+      box-shadow: 0 8px 16px rgba(255,182,185,0.12);
+      border: 2px solid #ffb6b9;
+    }
+    .gift-ribbon {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 12px;
+      height: 80px;
+      background: #ff6f91;
+      border-radius: 6px;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+    .gift-bow {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 36px;
+      height: 18px;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gift-bow span {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: #ffb6b9;
+      border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+      transform: rotate(-20deg);
+      margin: 0 2px;
+      box-shadow: 0 2px 6px rgba(255,182,185,0.12);
+    }
+    .gift-bow span:last-child {
+      transform: rotate(20deg);
+    }
+    .gift-surprise {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translate(-50%, 0);
+      min-width: 240px;
+      max-width: 320px;
+      background: #fff0f5;
+      border: 2px solid #ffb6b9;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(255,182,185,0.18);
+      padding: 18px 18px 12px 18px;
+      text-align: center;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.15rem;
+      color: #ff6f91;
+      z-index: 200;
+      animation: popSurprise 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+      overflow: visible;
+    }
+    .gift-surprise .main-photo {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px #ffb6b9;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .gift-box-container.opened .gift-surprise {
+      display: block;
+    }
+    @keyframes popSurprise {
+      0% { opacity: 0; transform: translate(-50%, 40px) scale(0.7); }
+      80% { opacity: 1; }
+      100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div style="padding-bottom:10vh;" id="openBoxPrompt">
+    <span style="background:#fff0f5;border:2px solid #ffb6b9;padding:10px 22px;border-radius:18px;font-family:'Pacifico',cursive;font-size:1.25rem;color:#ff6f91;box-shadow:0 2px 12px #ffb6b9cc;animation:floatPrompt 2.5s ease-in-out infinite;">Open the box</span>
+  </div>
+  <div class="cake-container">
+    <div class="cake">
+      <div class="candles">
+        <div class="candle" data-index="0">
+          <div class="flame"><div class="flame-inner"></div></div>
+        </div>
+        <div class="candle" data-index="1">
+          <div class="flame"><div class="flame-inner"></div></div>
+        </div>
+        <div class="candle" data-index="2">
+          <div class="flame"><div class="flame-inner"></div></div>
+        </div>
+        <div class="candle" data-index="3">
+          <div class="flame"><div class="flame-inner"></div></div>
+        </div>
+        <div class="candle" data-index="4">
+          <div class="flame"><div class="flame-inner"></div></div>
+        </div>
+      </div>
+      <div class="cake-face">
+        <div class="cake-eye"></div>
+        <div class="cake-smile"></div>
+        <div class="cake-eye"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Open the box prompt -->
+
+  <style>@keyframes floatPrompt{0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}</style>
+
+  <!-- Floating Gift Box -->
+  <div class="gift-box-container" id="giftBoxContainer" title="Click to open!">
+    <div class="gift-box">
+      <div class="gift-lid"></div>
+      <div class="gift-base"></div>
+      <div class="gift-ribbon"></div>
+      <div class="gift-bow"><span></span><span></span></div>
+      <div class="gift-surprise" id="giftSurprise" style="display:none;">
+        <img src="WhatsApp Image 2025-07-19 at 23.47.30_4f4b69ac.jpg" alt="Somya" class="main-photo" style="display:none;">
+        <div style="margin-bottom:6px; font-size:1.3rem; display:none;">🎁 Surprise!</div>
+        <span style="font-size:1.08rem; display:none; margin-bottom:8px;">Wishing you endless joy and sweet surprises, Somya!</span>
+        <div style="margin-top:8px; display:none;"><img src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif" alt="Surprise" style="width:70px;height:auto;border-radius:10px;box-shadow:0 2px 8px #ffb6b9;"/></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="message" id="birthday-message">
+  <script>
+    // Gift box open logic, modal show/hide, and prompt/surprise text
+    const giftBoxContainer = document.getElementById('giftBoxContainer');
+    const surpriseModalOverlay = document.getElementById('surpriseModalOverlay');
+    const surpriseModalClose = document.getElementById('surpriseModalClose');
+    const openBoxPrompt = document.getElementById('openBoxPrompt');
+    const bigSurpriseText = document.getElementById('bigSurpriseText');
+    if (giftBoxContainer) {
+      giftBoxContainer.addEventListener('click', function () {
+        if (!giftBoxContainer.classList.contains('opened')) {
+          giftBoxContainer.classList.add('opened');
+        }
+        // Hide the prompt
+        if (openBoxPrompt) openBoxPrompt.style.display = 'none';
+        // Show modal
+        if (surpriseModalOverlay) surpriseModalOverlay.style.display = 'flex';
+        // Show big surprise text
+        if (bigSurpriseText) bigSurpriseText.style.display = 'block';
+      });
+    }
+    if (surpriseModalClose && surpriseModalOverlay) {
+      surpriseModalClose.addEventListener('click', function () {
+        surpriseModalOverlay.style.display = 'none';
+        if (bigSurpriseText) bigSurpriseText.style.display = 'none';
+      });
+    }
+    // Optional: close modal when clicking outside content
+    if (surpriseModalOverlay) {
+      surpriseModalOverlay.addEventListener('click', function(e) {
+        if (e.target === surpriseModalOverlay) {
+          surpriseModalOverlay.style.display = 'none';
+          if (bigSurpriseText) bigSurpriseText.style.display = 'none';
+        }
+      });
+    }
+  </script>
+    <span>Happy Birthday Somya! 🎂🎉</span>
+    <div class="personal">Even from miles away, your light brightens everything. I miss you and love you always.</div>
+  </div>
+  <canvas class="confetti" id="confetti-canvas"></canvas>
+  <button class="music-btn" id="music-btn" title="Play/Pause music" aria-label="Play or pause music">
+    <span id="music-icon">&#127925;</span>
+  </button>
+
+<audio id="birthday-sound" src="./audio/happy-birthday-357371.mp3" preload="auto"></audio>
+
+
+  <script>
+    // Candle logic
+    const candles = document.querySelectorAll('.candle');
+    let blown = false;
+
+function extinguishCandles() {
+  if (blown) return;
+  blown = true;
+  candles.forEach(candle => {
+    candle.querySelector('.flame').classList.add('extinguished');
+  });
+  setTimeout(() => {
+    showMessageAndConfetti();
+    // Play the birthday sound only
+    const birthdaySound = document.getElementById('birthday-sound');
+    console.log('Trying to play birthday sound:', birthdaySound);
+    if (birthdaySound) {
+      birthdaySound.currentTime = 0;
+      birthdaySound.volume = 0.5;
+      const playPromise = birthdaySound.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log('Birthday sound played successfully');
+        }).catch(error => {
+          console.warn("Audio play blocked or failed:", error);
+        });
+      }
+    } else {
+      console.warn('Birthday sound element not found');
+    }
+  }, 900);
+}
+
+
+    candles.forEach(candle => {
+      candle.addEventListener('click', extinguishCandles);
+    });
+    // Optional: Microphone blowing detection
+    if (window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const mic = audioCtx.createMediaStreamSource(stream);
+          const analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          mic.connect(analyser);
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          function detectBlow() {
+            analyser.getByteTimeDomainData(data);
+            let max = 0;
+            for (let i = 0; i < data.length; i++) {
+              max = Math.max(max, Math.abs(data[i] - 128));
+            }
+            if (max > 60 && !blown) {
+              extinguishCandles();
+              stream.getTracks().forEach(track => track.stop());
+              audioCtx.close();
+            } else if (!blown) {
+              requestAnimationFrame(detectBlow);
+            }
+          }
+          detectBlow();
+        })
+        .catch(() => {});
+    }
+    // Confetti and message
+    function showMessageAndConfetti() {
+      document.getElementById('birthday-message').classList.add('visible');
+      launchConfetti();
+      launchBalloons();
+    }
+    // Confetti animation
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.classList.add('active');
+      const ctx = canvas.getContext('2d');
+      let W = window.innerWidth, H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+      let confetti = [];
+      for (let i = 0; i < 120; i++) {
+        confetti.push({
+          x: Math.random() * W,
+          y: Math.random() * -H,
+          r: 6 + Math.random() * 8,
+          d: 2 + Math.random() * 2,
+          color: `hsl(${Math.random()*360},90%,70%)`,
+          tilt: Math.random() * 20 - 10,
+          tiltAngle: 0,
+          tiltAngleInc: (Math.random() * 0.07) + 0.03
+        });
+      }
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        confetti.forEach(c => {
+          ctx.beginPath();
+          ctx.ellipse(c.x, c.y, c.r, c.r/2, c.tilt, 0, 2 * Math.PI);
+          ctx.fillStyle = c.color;
+          ctx.fill();
+        });
+        update();
+      }
+      function update() {
+        confetti.forEach(c => {
+          c.y += c.d;
+          c.tiltAngle += c.tiltAngleInc;
+          c.tilt = Math.sin(c.tiltAngle) * 12;
+          c.x += Math.sin(c.tiltAngle) * 1.2;
+          if (c.y > H + 20) {
+            c.x = Math.random() * W;
+            c.y = -10;
+          }
+        });
+      }
+      let anim = setInterval(draw, 18);
+      setTimeout(() => {
+        clearInterval(anim);
+        ctx.clearRect(0, 0, W, H);
+        canvas.classList.remove('active');
+      }, 4200);
+    }
+    // Balloon animation
+    function launchBalloons() {
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const balloon = document.createElement('div');
+          balloon.className = 'balloon';
+          balloon.style.left = (10 + Math.random() * 80) + 'vw';
+          balloon.style.background = `radial-gradient(circle at 60% 40%, #fff 10%, hsl(${Math.random()*360},90%,80%) 80%, hsl(${Math.random()*360},90%,60%) 100%)`;
+          document.body.appendChild(balloon);
+          setTimeout(() => {
+            balloon.remove();
+          }, 4000);
+        }, i * 350);
+      }
+    }
+    // Music button is now hidden since only the birthday sound plays
+    const musicBtn = document.getElementById('music-btn');
+    if (musicBtn) musicBtn.style.display = 'none';
+    // Responsive canvas
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
