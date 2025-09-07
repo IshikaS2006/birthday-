@@ -358,6 +358,20 @@
   <div style="padding-bottom:10vh;" id="openBoxPrompt">
     <span style="background:#fff0f5;border:2px solid #ffb6b9;padding:10px 22px;border-radius:18px;font-family:'Pacifico',cursive;font-size:1.25rem;color:#ff6f91;box-shadow:0 2px 12px #ffb6b9cc;animation:floatPrompt 2.5s ease-in-out infinite;">Open the box</span>
   </div>
+  <div id="blow-feedback" style="
+    position: fixed;
+    bottom: 220px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5rem;
+    color: #ff6f91;
+    text-shadow: 1px 1px 2px #fff;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s;
+"></div>
+
   <div class="cake-container">
     <div class="cake">
       <div class="candles">
@@ -501,20 +515,38 @@ function extinguishCandles() {
           analyser.fftSize = 256;
           mic.connect(analyser);
           const data = new Uint8Array(analyser.frequencyBinCount);
-          function detectBlow() {
-            analyser.getByteTimeDomainData(data);
-            let max = 0;
-            for (let i = 0; i < data.length; i++) {
-              max = Math.max(max, Math.abs(data[i] - 128));
-            }
-            if (max > 40 && !blown) {
-              extinguishCandles();
-              stream.getTracks().forEach(track => track.stop());
-              audioCtx.close();
-            } else if (!blown) {
-              requestAnimationFrame(detectBlow);
-            }
-          }
+          const feedbackEl = document.getElementById('blow-feedback');
+const feedbackTexts = ["thoda sa...", "little more...", "jaan nhi hai kya?", "bs itni si hawa?"];
+
+function showFeedback() {
+    const text = feedbackTexts[Math.floor(Math.random() * feedbackTexts.length)];
+    feedbackEl.textContent = text;
+    feedbackEl.style.opacity = 1;
+    feedbackEl.style.transform = `translateX(-50%) translateY(${Math.random()*-30}px)`;
+    setTimeout(() => {
+        feedbackEl.style.opacity = 0;
+    }, 1000);
+}
+
+function detectBlow() {
+    analyser.getByteTimeDomainData(data);
+    let max = 0;
+    for (let i = 0; i < data.length; i++) {
+        max = Math.max(max, Math.abs(data[i] - 128));
+    }
+    
+    if (max > 40 && !blown) {
+        // Strong blow → extinguish candles
+        extinguishCandles();
+        stream.getTracks().forEach(track => track.stop());
+        audioCtx.close();
+    } else if (!blown) {
+        // Weak blow → show playful feedback
+        if (max > 10) showFeedback();
+        requestAnimationFrame(detectBlow);
+    }
+}
+
           detectBlow();
         })
         .catch(() => {});
