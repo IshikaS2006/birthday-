@@ -176,6 +176,10 @@
     .confetti.active {
       display: block;
     }
+    body {
+  padding-bottom: 20vh; /* shifts everything up */
+}
+
     .balloon {
       position: absolute;
       bottom: -80px;
@@ -445,7 +449,7 @@
     <span id="music-icon">&#127925;</span>
   </button>
 
-<audio id="birthday-sound" src="./audio/happy-birthday-357371.mp3" preload="auto"></audio>
+<audio id="birthday-sound" src="./audio/happy-birthday-357371.mp3" preload="auto" playsinline></audio>
 
 
   <script>
@@ -456,28 +460,30 @@
 function extinguishCandles() {
   if (blown) return;
   blown = true;
+
+  // Extinguish flames
   candles.forEach(candle => {
     candle.querySelector('.flame').classList.add('extinguished');
   });
+
+  // Play the birthday sound immediately on click (mobile-safe)
+  const birthdaySound = document.getElementById('birthday-sound');
+  if (birthdaySound) {
+    birthdaySound.currentTime = 0;
+    birthdaySound.volume = 0.5;
+    const playPromise = birthdaySound.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        console.log("Birthday sound played successfully");
+      }).catch(err => {
+        console.warn("Audio blocked:", err);
+      });
+    }
+  }
+
+  // Delay the message and confetti to keep original timing
   setTimeout(() => {
     showMessageAndConfetti();
-    // Play the birthday sound only
-    const birthdaySound = document.getElementById('birthday-sound');
-    console.log('Trying to play birthday sound:', birthdaySound);
-    if (birthdaySound) {
-      birthdaySound.currentTime = 0;
-      birthdaySound.volume = 0.5;
-      const playPromise = birthdaySound.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          console.log('Birthday sound played successfully');
-        }).catch(error => {
-          console.warn("Audio play blocked or failed:", error);
-        });
-      }
-    } else {
-      console.warn('Birthday sound element not found');
-    }
   }, 900);
 }
 
